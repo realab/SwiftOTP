@@ -50,10 +50,10 @@ internal class Generator {
 		let key = secret.bytes
 		
 		// HMAC message data from counter as big endian
-		let counterMessage = counter.bigEndian.data
+		var counterMessage = counter.bigEndian
 		
 		// HMAC hash counter data with secret key
-		let hmac = try! HMAC(key: key, variant: algorithm.hmacVariant).authenticate(counterMessage.bytes)
+		let hmac = try! HMAC(key: key, variant: algorithm.hmacVariant).authenticate(Data(bytes: &counterMessage, count: MemoryLayout.size(ofValue: counterMessage)).bytes)
 		
 		// Get last 4 bits of hash as offset
 		let offset = Int((hmac.last ?? 0x00) & 0x0f)
